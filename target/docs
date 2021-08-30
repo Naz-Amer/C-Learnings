@@ -1,0 +1,81 @@
+package browse;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+import objects.Elements;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+public class OpeningBrowser {
+
+    WebDriver driver;
+
+    @BeforeTest
+
+    public void  setUp(){
+
+        WebDriverManager.chromedriver().setup();
+        driver = new ChromeDriver();
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        driver.manage().window().maximize();
+        driver.navigate().to("https://www.labcorp.com/");
+    }
+
+    @Test
+
+    public void clickCarier(){
+
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        Elements webObject = new Elements(driver);
+        js.executeScript("arguments[0].scrollIntoView();", webObject.Careers);
+        webObject.Careers.click();
+
+
+        Set<String> list = driver.getWindowHandles();
+        System.out.println(list.size());
+        for(String each:list){
+            driver.switchTo().window(each);
+            System.out.println(each);
+            System.out.println(driver.getTitle());
+        }
+
+        driver.findElement(By.xpath("//input[@class='search-keyword']"))
+                .sendKeys("Laboratory Automation Engineer");
+
+
+
+    //Assert.assertTrue(result.contains("919 results found for Laboratory Automation Engineer 1"));
+
+   //        Assert.assertEquals(result, result,"919 results found for Laboratory Automation Engineer 1");
+   //        System.out.println(result);
+
+    String job = webObject.firstOne.getText();
+           System.out.println(job);
+
+
+
+           //        String Exjobtitle = "Laboratory Automation Engineer";
+           //        String Acjobtitle = webObject.jobTitle.getText();
+           //        Assert.assertEquals(Exjobtitle,Acjobtitle,"Job tile is not matching");
+
+           // StaleElementReferenceException
+
+    }
+
+    @AfterTest
+
+    public void closeUp(){
+        driver.close();
+        driver.quit();
+    }
+}
